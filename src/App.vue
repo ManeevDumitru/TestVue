@@ -61,8 +61,11 @@
       <ul id="riteContainer">
         <li>
           <span class="spanRite">{{data.fields.service.title}}</span>
-          <span class="showPopup">?</span>
-          <span class="popup">lorem</span>
+          <div class="popup">
+            <button class="popupButton">?</button>
+            <div class="popupContent">Lorem ipsum lorem ipsum lorem Lorem ipsum lorem ipsum lorem
+              Lorem ipsum lorem ipsum lorem Lorem ipsum lorem ipsum lorem Lorem ipsum lorem ipsum lorem Lorem ipsum <span class="spanHint">{{ data.fields.service.hint }} »</span></div>
+          </div>
         </li>
         <li>
           <select name="selectRites" v-model="selected" id="selectRites">
@@ -77,15 +80,18 @@
           </select>
         </li>
         <li>
-          <span class="spanRite">{{ data.fields.names.title.split(':')[0]}}:</span>
-          <span id="spanObjection">{{ data.fields.names.title.split(':')[1]}}</span>
-          <span></span>
-          <span class="showPopup">?</span>
+            <span class="spanRite">{{ data.fields.names.title.split(':')[0]}}:</span>
+            <span id="spanObjection">{{ data.fields.names.title.split(':')[1]}}</span>
+          <div class="popup">
+            <button class="popupButton">?</button>
+            <div class="popupContent">Lorem ipsum lorem ipsum lorem Lorem ipsum lorem ipsum lorem
+              Lorem ipsum lorem ipsum lorem Lorem ipsum lorem ipsum lorem Lorem ipsum lorem ipsum lorem Lorem <span class="spanHint">{{ data.fields.names.hint }} »</span></div>
+          </div>
         </li>
         <li>
           <div id="riteForHealth" :style="{'border' : '2px solid ' + selected.color, 'color' : selected.color}">
-            <img :src="require('./assets/corner_' + selected.color + '.png')" class="corner">
-            <img :src="require('./assets/corner_' + selected.color + '.png')" class="corner">
+            <img :src="require('./assets/corner_' + selected.color + '.png')" alt="corner" class="corner">
+            <img :src="require('./assets/corner_' + selected.color + '.png')" alt="corner" class="corner">
             <div id="riteForHealthLogo">
               <img :src="require('./assets/rites_' + selected.color + '.png')" alt="Missing Crest"/>
               <div>{{selected.title.split('-')[0]}}</div>
@@ -99,27 +105,39 @@
                 <Autocomplete @input.native="showMark($event, index)" :search="search" placeholder="Пометка"></Autocomplete>
               </li>
             </ul>
-            <img :src="require('./assets/corner_' + selected.color + '.png')" class="corner">
-            <img :src="require('./assets/corner_' + selected.color + '.png')" class="corner">
+            <img :src="require('./assets/corner_' + selected.color + '.png')" alt="corner" class="corner">
+            <img :src="require('./assets/corner_' + selected.color + '.png')" alt="corner" class="corner">
           </div>
         </li>
         <li>
           <div>
             <span class="spanRite">{{data.fields.amount.title}}:</span>
-            <span class="showPopup">?</span>
+            <div class="popup">
+              <button class="popupButton">?</button>
+              <div class="popupContent">Lorem ipsum lorem ipsum lorem Lorem ipsum lorem ipsum lorem
+                Lorem ipsum lorem ipsum lorem Lorem ipsum lorem ipsum lorem Lorem ipsum lorem ipsum lorem Lorem <span class="spanHint">{{ data.fields.amount.hint }} »</span></div>
+            </div>
           </div>
           <input :value="getPrice" ref="donate" type="number" id="inputSum"/>
         </li>
         <li>
           <div>
             <span class="spanRite">{{data.fields.email.title}}:</span>
-            <span class="showPopup">?</span>
+            <div class="popup">
+              <button class="popupButton">?</button>
+              <div class="popupContent">Lorem ipsum lorem ipsum lorem Lorem ipsum lorem ipsum lorem
+                Lorem ipsum lorem ipsum lorem Lorem ipsum lorem ipsum lorem Lorem ipsum lorem ipsum lorem Lorem <span class="spanHint">{{ data.fields.email.hint }} »</span></div>
+            </div>
           </div>
           <input type="email" placeholder="для уведомлений" id="inputEmail"/>
         </li>
         <li>
           <span class="spanRite">{{data.fields.donate.title}}:</span>
-          <span class="showPopup">?</span>
+          <div class="popup">
+            <button class="popupButton">?</button>
+            <div class="popupContent">Lorem ipsum lorem ipsum lorem Lorem ipsum lorem ipsum lorem
+              Lorem ipsum lorem ipsum lorem Lorem ipsum lorem ipsum lorem Lorem ipsum lorem ipsum lorem Lorem <span class="spanHint">{{ data.fields.donate.hint }} »</span></div>
+          </div>
         </li>
         <li>
           <ul id="listPaymentMethods">
@@ -241,39 +259,49 @@
       grid-template-rows: auto;
     }
 
-    .spanRite {
+    .popup {
+      display: inline-block;
+      .popupButton {
+        border: none;
+        border-radius: 50%;
+        background: $brown-color;
+        padding: 0 2px;
+        font-weight: bold;
+        color: $bright-brown-color;
+        font-size: 12px;
+        &:hover {
+          cursor: pointer;
+        }
+        &:hover + .popupContent {
+          display: block
+        }
+      }
+      .popupContent {
+        background: #000;
+        color: #fff;
+        font-size: 14px;
+        padding: 5px;
+        border-radius: 5px;
+        position: absolute;
+        left: 0;
+        top: 0;
+        transform: translate(-45%, -100%);
+        width: 356px;
+        z-index: 3;
+        display: none;
+      }
+    }
+
+    .spanHint, .spanRite {
       color: $brown-color;
       font-weight: bold;
+    }
+    .spanRite {
       line-height: 2.5;
     }
 
     #spanObjection {
       font-weight: bold;
-    }
-
-    .showPopup {
-      background: $brown-color;
-      border-radius: 50%;
-      padding: 0 3px;
-      color: $bright-brown-color;
-      font-weight: bold;
-      font-size: 12px;
-
-      &:hover {
-        cursor: pointer;
-      }
-    }
-
-    .popup {
-      position: absolute;
-      left: 0;
-      top: 0;
-      transform: translate(-21%, -10%);
-      color: #fff;
-      background: #000;
-      opacity: .9;
-      border-radius: 5px;
-      padding: 5px;
     }
 
     #riteForHealth {
@@ -375,7 +403,7 @@
       img {
         width: 95%;
         background: #fff;
-        opacity: 0.8;
+        opacity: 0.6;
         margin: 0 0 0 3px;
       }
 
