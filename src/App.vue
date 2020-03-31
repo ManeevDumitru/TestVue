@@ -30,6 +30,7 @@
         <li>
           <span class="spanRite">{{data.fields.service.title}}</span>
           <span class="showPopup">?</span>
+          <span class="popup">lorem</span>
         </li>
         <li>
           <select name="selectRites" v-model="selected" id="selectRites">
@@ -48,10 +49,10 @@
         </li>
         <li>
           <div id="riteForHealth" :style="{'border' : '2px solid ' + selected.color, 'color' : selected.color}">
-            <div class="corner" id="cornerTopLeft"></div>
-            <div class="corner" id="cornerTopRight"></div>
+            <img :src="require('./assets/corner_' + selected.color + '.png')" class="corner">
+            <img :src="require('./assets/corner_' + selected.color + '.png')" class="corner">
             <div id="riteForHealthLogo" >
-              <img src="../src/assets/rites.png" alt="Missing Crest"/>
+              <img :src="require('./assets/rites_' + selected.color + '.png')" alt="Missing Crest"/>
               <div>{{selected.title.split('-')[0]}}</div>
               <div>{{selected.title.split('-')[1]}}</div>
             </div>
@@ -62,8 +63,8 @@
                 <input type="text" placeholder="пометка"/>
               </li>
             </ul>
-            <div class="corner" id="cornerBottomLeft"></div>
-            <div class="corner" id="cornerBottomRight"></div>
+              <img :src="require('./assets/corner_' + selected.color + '.png')" class="corner">
+              <img :src="require('./assets/corner_' + selected.color + '.png')" class="corner">
           </div>
         </li>
         <li>
@@ -193,7 +194,7 @@
     background: #e2e2db;
     max-width: 400px;
     transform: translate(-50%);
-
+    margin: 200px 0;
     h1 {
       font: 35px / 1 Georgia, serif, Arial;
     }
@@ -226,39 +227,46 @@
       }
     }
 
+    .popup {
+      position: absolute;
+      left: 0;
+      top: 0;
+      transform: translate(-21%, -10%);
+      color: #fff;
+      background: #000;
+      opacity: .9;
+      border-radius: 5px;
+      padding: 5px ;
+    }
+
     #riteForHealth {
       background: #fff;
     }
 
     .corner {
-      background: url(assets/corner.png);
       background-size: cover;
       height: 30px;
       width: 30px;
       position: absolute;
-    }
-
-    #cornerTopLeft {
-      left: 0;
-      top: 0;
-    }
-
-    #cornerTopRight {
-      right: 0;
-      top: 0;
-      transform: rotate(90deg);
-    }
-
-    #cornerBottomLeft {
-      left: 0;
-      bottom: 0;
-      transform: rotate(-90deg);
-    }
-
-    #cornerBottomRight {
-      right: 0;
-      bottom: 0;
-      transform: rotate(180deg);
+      &:nth-child(1) {
+         left: 0;
+         top: 0;
+       }
+      &:nth-child(2) {
+        right: 0;
+        top: 0;
+        transform: rotate(90deg);
+      }
+      &:nth-child(5) {
+        left: 0;
+        bottom: 0;
+        transform: rotate(-90deg);
+      }
+      &:nth-child(6) {
+        right: 0;
+        bottom: 0;
+        transform: rotate(180deg);
+      }
     }
 
     #riteForHealthLogo {
@@ -292,7 +300,6 @@
         padding: 5px 0;
         margin: auto;
         font-family: Georgia, serif, Arial;
-
         span {
           text-align: center;
         }
