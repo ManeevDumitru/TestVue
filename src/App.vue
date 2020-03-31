@@ -1,21 +1,53 @@
 <script>
+    import Autocomplete from '@trevoreyre/autocomplete-vue'
+
     export default {
         name: "App",
+        components: {
+            Autocomplete
+        },
         data() {
             return {
                 data: {},
                 selected: '',
-                showForm: false
+                donate: '',
+                showForm: false,
+                model: []
             }
         },
         async mounted() {
             await this.loadData()
         },
+       computed: {
+            getPrice () {
+                if (this.selected.formula === 'per_person') {
+                    return this.model.filter(item => item.name).length * this.selected.price
+                }
+                return this.selected.price
+            }
+       },
         methods: {
             async loadData() {
                 this.data = (await import('./assets/data')).default
                 this.selected = this.data.fields.service.values[0].items[0]
+                this.model = [...new Array(this.data.fields.names.max)].map(() => ({
+                    name: "",
+                    mark: ""
+                }))
+
                 this.showForm = true
+            },
+            submit () {
+                console.log(this.$refs.donate.value)
+            },
+            showMark (e, index) {
+                this.model[index].mark = e.target.value
+            },
+            search(input) {
+                if (!input) {
+                    return []
+                }
+                return this.data.fields.names.marks.filter(item => item.includes(input))
             }
         }
     }
@@ -34,8 +66,11 @@
         </li>
         <li>
           <select name="selectRites" v-model="selected" id="selectRites">
-            <optgroup :key="index" v-for="(category, index) in data.fields.service.values"
-                      :label="category.title">
+            <optgroup
+              :key="index"
+              v-for="(category, index) in data.fields.service.values"
+              :label="category.title"
+            >
               <option :key="index" v-for="(item, index) in category.items" :value="item">{{item.title}}
               </option>
             </optgroup>
@@ -51,38 +86,39 @@
           <div id="riteForHealth" :style="{'border' : '2px solid ' + selected.color, 'color' : selected.color}">
             <img :src="require('./assets/corner_' + selected.color + '.png')" class="corner">
             <img :src="require('./assets/corner_' + selected.color + '.png')" class="corner">
-            <div id="riteForHealthLogo" >
+            <div id="riteForHealthLogo">
               <img :src="require('./assets/rites_' + selected.color + '.png')" alt="Missing Crest"/>
               <div>{{selected.title.split('-')[0]}}</div>
               <div>{{selected.title.split('-')[1]}}</div>
             </div>
             <ul id="listRiteForHealth">
-              <li :style="{'border-bottom' : '1px solid ' + selected.color}" :key="index" v-for="(row, index) in data.fields.names.max">
+              <li :style="{'border-bottom' : '1px solid ' + selected.color}" :key="index"
+                  v-for="(row, index) in data.fields.names.max">
                 <span>{{row}}.</span>
-                <input type="text" placeholder="Имя"/>
-                <input type="text" placeholder="пометка"/>
+                <input v-model="model[index].name" type="text" placeholder="Имя"/>
+                <Autocomplete @input.native="showMark($event, index)" :search="search" placeholder="Пометка"></Autocomplete>
               </li>
             </ul>
-              <img :src="require('./assets/corner_' + selected.color + '.png')" class="corner">
-              <img :src="require('./assets/corner_' + selected.color + '.png')" class="corner">
+            <img :src="require('./assets/corner_' + selected.color + '.png')" class="corner">
+            <img :src="require('./assets/corner_' + selected.color + '.png')" class="corner">
           </div>
         </li>
         <li>
           <div>
-            <span class="spanRite">Сумма (рекомендуемая):</span>
+            <span class="spanRite">{{data.fields.amount.title}}:</span>
             <span class="showPopup">?</span>
           </div>
-          <input type="number" value="0" id="inputSum"/>
+          <input :value="getPrice" ref="donate" type="number" id="inputSum"/>
         </li>
         <li>
           <div>
-            <span class="spanRite">Эллектроная почта:</span>
+            <span class="spanRite">{{data.fields.email.title}}:</span>
             <span class="showPopup">?</span>
           </div>
           <input type="email" placeholder="для уведомлений" id="inputEmail"/>
         </li>
         <li>
-          <span class="spanRite">Способ пожертвования:</span>
+          <span class="spanRite">{{data.fields.donate.title}}:</span>
           <span class="showPopup">?</span>
         </li>
         <li>
@@ -138,7 +174,7 @@
           </ul>
         </li>
         <li>
-          <button id="buttonSpare">Пожертвовать</button>
+          <button id="buttonSpare" @click="submit()">Пожертвовать</button>
         </li>
         <li>
           При возникновении вопросов пишите на
@@ -195,6 +231,7 @@
     max-width: 400px;
     transform: translate(-50%);
     margin: 200px 0;
+
     h1 {
       font: 35px / 1 Georgia, serif, Arial;
     }
@@ -236,7 +273,7 @@
       background: #000;
       opacity: .9;
       border-radius: 5px;
-      padding: 5px ;
+      padding: 5px;
     }
 
     #riteForHealth {
@@ -248,20 +285,24 @@
       height: 30px;
       width: 30px;
       position: absolute;
+
       &:nth-child(1) {
-         left: 0;
-         top: 0;
-       }
+        left: 0;
+        top: 0;
+      }
+
       &:nth-child(2) {
         right: 0;
         top: 0;
         transform: rotate(90deg);
       }
+
       &:nth-child(5) {
         left: 0;
         bottom: 0;
         transform: rotate(-90deg);
       }
+
       &:nth-child(6) {
         right: 0;
         bottom: 0;
@@ -300,6 +341,7 @@
         padding: 5px 0;
         margin: auto;
         font-family: Georgia, serif, Arial;
+
         span {
           text-align: center;
         }
