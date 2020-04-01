@@ -299,12 +299,11 @@
 
   section {
     position: absolute;
-    left: 50%;
+    left: 0;
     top: 0;
     background: #e2e2db;
     max-width: 400px;
-    transform: translate(-50%);
-    margin: 200px 0;
+    margin: 0;
 
     h1 {
       font: 35px / 1 Georgia, serif, Arial;
