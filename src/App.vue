@@ -15,7 +15,7 @@
         model: [],
         email: "",
         formUrl: `http://area.info/api/get_form`,
-        orderCreateUrl: "http://area.info/api/payment/yandex/create",
+        orderCreateUrl: "http://church-admin.loc/api/payment/yandex/create",
         orderID: null
       };
     },
@@ -76,7 +76,7 @@
           .then((myJson) => {
             this.orderID = myJson.order_id;
             this.$nextTick(() => {
-              this.$refs.payForm.submit();
+              //this.$refs.payForm.submit();
             })
           })
           .catch((e) => {
