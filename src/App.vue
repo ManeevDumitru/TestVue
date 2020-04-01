@@ -76,7 +76,7 @@
           .then((myJson) => {
             this.orderID = myJson.order_id;
             this.$nextTick(() => {
-              //this.$refs.payForm.submit();
+              this.$refs.payForm.submit();
             })
           })
           .catch((e) => {
