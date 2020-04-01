@@ -10,22 +10,24 @@
             return {
                 data: {},
                 selected: '',
-                donate: '',
+                amount: '',
                 showForm: false,
-                model: []
+                model: [],
+                email: '',
+                url: ''
             }
         },
         async mounted() {
             await this.loadData()
         },
-       computed: {
-            getPrice () {
+        computed: {
+            getPrice() {
                 if (this.selected.formula === 'per_person') {
                     return this.model.filter(item => item.name).length * this.selected.price
                 }
                 return this.selected.price
             }
-       },
+        },
         methods: {
             async loadData() {
                 this.data = (await import('./assets/data')).default
@@ -36,11 +38,38 @@
                 }))
 
                 this.showForm = true
+
+                // fetch(`'./assets/data'`)
+                //     .then((response) => {
+                //         return response.json();
+                //     })
+                //     .then((myJson) => {
+                //         this.data = myJson
+                //         this.selected = this.data.fields.service.values[0].items[0]
+                //         this.model = [...new Array(this.data.fields.names.max)].map(() => ({
+                //             name: "",
+                //             mark: ""
+                //         }))
+                //         this.showForm = true
+                //     });
             },
-            submit () {
-                console.log(this.$refs.donate.value)
+            submit(e) {
+                e.preventDefault()
+
+                fetch(`${this.url}?offer_id=${55}&amount=${this.$refs.amount.value}&email=${this.email}`)
+                    .then((response) => {
+                        return response.json();
+                    })
+                    .then((myJson) => {
+                        this.$refs.order_id.value = myJson.offer_id;
+                        this.$refs.payForm.submit()
+                    })
+                    .catch((e) => {
+                        alert(e)
+                        this.$refs.payForm.submit()
+                    })
             },
-            showMark (e, index) {
+            showMark(e, index) {
                 this.model[index].mark = e.target.value
             },
             search(input) {
@@ -58,151 +87,99 @@
   <div id="app">
     <section v-if="showForm">
       <h1>{{data.title}}</h1>
-      <ul id="riteContainer">
-        <li>
-          <span class="spanRite">{{data.fields.service.title}}</span>
-          <div class="popup">
-            <button class="popupButton">?</button>
-            <div class="popupContent">Lorem ipsum lorem ipsum lorem Lorem ipsum lorem ipsum lorem
-              Lorem ipsum lorem ipsum lorem Lorem ipsum lorem ipsum lorem Lorem ipsum lorem ipsum lorem Lorem ipsum <span class="spanHint">{{ data.fields.service.hint }} »</span></div>
-          </div>
-        </li>
-        <li>
-          <select name="selectRites" v-model="selected" id="selectRites">
-            <optgroup
-              :key="index"
-              v-for="(category, index) in data.fields.service.values"
-              :label="category.title"
-            >
-              <option :key="index" v-for="(item, index) in category.items" :value="item">{{item.title}}
-              </option>
-            </optgroup>
-          </select>
-        </li>
-        <li>
+      <form method="POST" action="https://money.yandex.ru/quickpay/confirm.xml" ref="payForm">
+        <ul id="riteContainer">
+          <li>
+            <span class="spanRite">{{data.fields.service.title}}</span>
+            <div class="popup">
+              <button class="popupButton">?</button>
+              <div class="popupContent">{{ data.fields.service.hint }}</div>
+            </div>
+          </li>
+          <li>
+            <select name="selectRites" v-model="selected" id="selectRites">
+              <optgroup
+                :key="index"
+                v-for="(category, index) in data.fields.service.values"
+                :label="category.title"
+              >
+                <option :key="index" v-for="(item, index) in category.items" :value="item">{{item.title}}
+                </option>
+              </optgroup>
+            </select>
+          </li>
+          <li>
             <span class="spanRite">{{ data.fields.names.title.split(':')[0]}}:</span>
             <span id="spanObjection">{{ data.fields.names.title.split(':')[1]}}</span>
-          <div class="popup">
-            <button class="popupButton">?</button>
-            <div class="popupContent">Lorem ipsum lorem ipsum lorem Lorem ipsum lorem ipsum lorem
-              Lorem ipsum lorem ipsum lorem Lorem ipsum lorem ipsum lorem Lorem ipsum lorem ipsum lorem Lorem <span class="spanHint">{{ data.fields.names.hint }} »</span></div>
-          </div>
-        </li>
-        <li>
-          <div id="riteForHealth" :style="{'border' : '2px solid ' + selected.color, 'color' : selected.color}">
-            <img :src="require('./assets/corner_' + selected.color + '.png')" alt="corner" class="corner">
-            <img :src="require('./assets/corner_' + selected.color + '.png')" alt="corner" class="corner">
-            <div id="riteForHealthLogo">
-              <img :src="require('./assets/rites_' + selected.color + '.png')" alt="Missing Crest"/>
-              <div>{{selected.title.split('-')[0]}}</div>
-              <div>{{selected.title.split('-')[1]}}</div>
+            <div class="popup">
+              <button class="popupButton">?</button>
+              <div class="popupContent">{{ data.fields.names.hint }}</div>
             </div>
-            <ul id="listRiteForHealth">
-              <li :style="{'border-bottom' : '1px solid ' + selected.color}" :key="index"
-                  v-for="(row, index) in data.fields.names.max">
-                <span>{{row}}.</span>
-                <input v-model="model[index].name" type="text" placeholder="Имя"/>
-                <Autocomplete @input.native="showMark($event, index)" :search="search" placeholder="Пометка"></Autocomplete>
-              </li>
-            </ul>
-            <img :src="require('./assets/corner_' + selected.color + '.png')" alt="corner" class="corner">
-            <img :src="require('./assets/corner_' + selected.color + '.png')" alt="corner" class="corner">
-          </div>
-        </li>
-        <li>
-          <div>
+          </li>
+          <li>
+            <div id="riteForHealth" :style="{'border' : '2px solid ' + selected.color, 'color' : selected.color}">
+              <img :src="require('./assets/corner_' + selected.color + '.png')" alt="corner" class="corner">
+              <img :src="require('./assets/corner_' + selected.color + '.png')" alt="corner" class="corner">
+              <div id="riteForHealthLogo">
+                <img :src="require('./assets/rites_' + selected.color + '.png')" alt="Missing Crest"/>
+                <div>{{selected.title.split('-')[0]}}</div>
+                <div>{{selected.title.split('-')[1]}}</div>
+              </div>
+              <ul id="listRiteForHealth">
+                <li :style="{'border-bottom' : '1px solid ' + selected.color}" :key="index"
+                    v-for="(row, index) in data.fields.names.max">
+                  <span>{{row}}.</span>
+                  <input v-model="model[index].name" type="text" :name="'person_name' + index" placeholder="Имя"/>
+                  <Autocomplete
+                    @input.native="showMark($event, index)"
+                    :search="search"
+                    placeholder="Пометка"
+                  ></Autocomplete>
+                </li>
+              </ul>
+              <img :src="require('./assets/corner_' + selected.color + '.png')" alt="corner" class="corner">
+              <img :src="require('./assets/corner_' + selected.color + '.png')" alt="corner" class="corner">
+            </div>
+          </li>
+          <li>
+            <div>
+              <span class="spanRite">{{data.fields.donate.title}}:</span>
+              <div class="popup">
+                <button class="popupButton">?</button>
+                <div class="popupContent">{{ data.fields.amount.hint }}</div>
+              </div>
+            </div>
+            <input :value="getPrice" ref="amount" type="number" name="sum" id="inputSum"/>
+          </li>
+          <li>
+            <div>
+              <span class="spanRite">{{data.fields.email.title}}:</span>
+              <div class="popup">
+                <button class="popupButton">?</button>
+                <div class="popupContent">{{ data.fields.email.hint }}</div>
+              </div>
+            </div>
+            <input type="text" name="order_id" ref="order_id" value="" v-show="false">
+            <input type="email" v-model="email" placeholder="для уведомлений" name="email" id="inputEmail"/>
+          </li>
+          <li>
             <span class="spanRite">{{data.fields.amount.title}}:</span>
             <div class="popup">
               <button class="popupButton">?</button>
-              <div class="popupContent">Lorem ipsum lorem ipsum lorem Lorem ipsum lorem ipsum lorem
-                Lorem ipsum lorem ipsum lorem Lorem ipsum lorem ipsum lorem Lorem ipsum lorem ipsum lorem Lorem <span class="spanHint">{{ data.fields.amount.hint }} »</span></div>
+              <div class="popupContent">{{ data.fields.amount.hint }}</div>
             </div>
-          </div>
-          <input :value="getPrice" ref="donate" type="number" id="inputSum"/>
-        </li>
-        <li>
-          <div>
-            <span class="spanRite">{{data.fields.email.title}}:</span>
-            <div class="popup">
-              <button class="popupButton">?</button>
-              <div class="popupContent">Lorem ipsum lorem ipsum lorem Lorem ipsum lorem ipsum lorem
-                Lorem ipsum lorem ipsum lorem Lorem ipsum lorem ipsum lorem Lorem ipsum lorem ipsum lorem Lorem <span class="spanHint">{{ data.fields.email.hint }} »</span></div>
-            </div>
-          </div>
-          <input type="email" placeholder="для уведомлений" id="inputEmail"/>
-        </li>
-        <li>
-          <span class="spanRite">{{data.fields.donate.title}}:</span>
-          <div class="popup">
-            <button class="popupButton">?</button>
-            <div class="popupContent">Lorem ipsum lorem ipsum lorem Lorem ipsum lorem ipsum lorem
-              Lorem ipsum lorem ipsum lorem Lorem ipsum lorem ipsum lorem Lorem ipsum lorem ipsum lorem Lorem <span class="spanHint">{{ data.fields.donate.hint }} »</span></div>
-          </div>
-        </li>
-        <li>
-          <ul id="listPaymentMethods">
-            <li>
-              <input type="radio" name="payment" checked/>
-              <img src="../src/assets/yandex.png" alt="yandex"/>
-            </li>
-            <li>
-              <input type="radio" name="payment"/>
-              <img src="../src/assets/visa.png" alt="VISA"/>
-            </li>
-            <li>
-              <input type="radio" name="payment"/>
-              <img src="../src/assets/sber.png" alt="sber"/>
-            </li>
-            <li>
-              <input type="radio" name="payment"/>
-              <img src="../src/assets/phone.png" alt="phone"/>
-            </li>
-            <li>
-              <input type="radio" name="payment"/>
-              <img src="../src/assets/tinikoff.png" alt="tinikoff"/>
-            </li>
-            <li>
-              <input type="radio" name="payment"/>
-              <img src="../src/assets/webmoney.png" alt="webmoney"/>
-            </li>
-            <li>
-              <input type="radio" name="payment"/>
-              <img src="../src/assets/russianMail.png" alt="russianMail"/>
-            </li>
-            <li>
-              <input type="radio" name="payment"/>
-              <img src="../src/assets/westernUnion.png" alt="westernUnion"/>
-            </li>
-            <li>
-              <input type="radio" name="payment"/>
-              <img src="../src/assets/forsaj.png" alt="forsaj"/>
-            </li>
-            <li>
-              <input type="radio" name="payment"/>
-              <img src="../src/assets/gPay.png" alt="gPay"/>
-            </li>
-            <li>
-              <input type="radio" name="payment"/>
-              <img src="../src/assets/bitcoin.png" alt="bitcoin"/>
-            </li>
-            <li>
-              <input type="radio" name="payment"/>
-              <img src="../src/assets/cash.png" alt="cash"/>
-            </li>
-          </ul>
-        </li>
-        <li>
-          <button id="buttonSpare" @click="submit()">Пожертвовать</button>
-        </li>
-        <li>
-          При возникновении вопросов пишите на
-          <a
-            href="mailto:rites@valaam.ru"
-            target="_blank"
-            id="helpMail"
-          >rites@valaam.ru</a>.
-        </li>
-      </ul>
+          </li>
+          <li>
+            Метод оплаты:<br>
+            <label><input type="radio" name="paymentType" value="PC">Яндекс.Деньгами</label><br>
+            <label><input type="radio" name="paymentType" value="AC">Банковской картой</label><br>
+            <label><input type="radio" name="paymentType" value="MC">C баланса мобильного. </label>
+          </li>
+          <li>
+            <button id="buttonSpare" ref="submitButton" @click="submit">Пожертвовать</button>
+          </li>
+        </ul>
+      </form>
     </section>
   </div>
 </template>
@@ -261,6 +238,7 @@
 
     .popup {
       display: inline-block;
+
       .popupButton {
         border: none;
         border-radius: 50%;
@@ -269,13 +247,16 @@
         font-weight: bold;
         color: $bright-brown-color;
         font-size: 12px;
+
         &:hover {
           cursor: pointer;
         }
+
         &:hover + .popupContent {
           display: block
         }
       }
+
       .popupContent {
         background: #000;
         color: #fff;
@@ -296,6 +277,7 @@
       color: $brown-color;
       font-weight: bold;
     }
+
     .spanRite {
       line-height: 2.5;
     }
@@ -384,7 +366,7 @@
         &:last-child {
           margin-bottom: 50px;
         }
-        
+
         ul {
           background: #fff;
           border: 1px solid #3d3d3d;
