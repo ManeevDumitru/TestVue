@@ -384,6 +384,16 @@
         &:last-child {
           margin-bottom: 50px;
         }
+        
+        ul {
+          background: #fff;
+          border: 1px solid #3d3d3d;
+          border-radius: 5px;
+          max-width: 90%;
+          color: #3d3d3d;
+          height: 100%;
+          padding: 0 0 5px 0;
+        }
       }
     }
 
