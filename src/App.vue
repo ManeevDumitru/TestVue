@@ -14,7 +14,8 @@
                 showForm: false,
                 model: [],
                 email: '',
-                url: ''
+                formUrl: `http://area.info/api/get_form`,
+                orderCreateUrl: 'http://area.info/api/payment/yandex/create'
             }
         },
         async mounted() {
@@ -35,28 +36,29 @@
                 this.model = [...new Array(this.data.fields.names.max)].map(() => ({
                     name: "",
                     mark: ""
-                }))
+                }));
 
                 this.showForm = true
 
-                // fetch(`'./assets/data'`)
-                //     .then((response) => {
-                //         return response.json();
-                //     })
-                //     .then((myJson) => {
-                //         this.data = myJson
-                //         this.selected = this.data.fields.service.values[0].items[0]
-                //         this.model = [...new Array(this.data.fields.names.max)].map(() => ({
-                //             name: "",
-                //             mark: ""
-                //         }))
-                //         this.showForm = true
-                //     });
+                fetch(this.formUrl)
+                    .then((response) => {
+                        return response.json();
+                    })
+                    .then((myJson) => {
+                        this.data = myJson
+                        console.log(this.data.fields.service.values[0].items[0]);
+                        this.selected = this.data.fields.service.values[0].items[0]
+                        this.model = [...new Array(this.data.fields.names.max)].map(() => ({
+                            name: "",
+                            mark: ""
+                        }))
+                        this.showForm = true
+                    });
             },
             submit(e) {
                 e.preventDefault()
 
-                fetch(`${this.url}?offer_id=${55}&amount=${this.$refs.amount.value}&email=${this.email}`)
+                fetch(`${this.orderCreateUrl}?offer_id=${55}&amount=${this.$refs.amount.value}&email=${this.email}`)
                     .then((response) => {
                         return response.json();
                     })
@@ -159,7 +161,7 @@
                 <div class="popupContent">{{ data.fields.email.hint }}</div>
               </div>
             </div>
-            <input type="text" name="order_id" ref="order_id" value="" v-show="false">
+            <input type="text" name="label" ref="order_id" value="" v-show="false">
             <input type="email" v-model="email" placeholder="для уведомлений" name="email" id="inputEmail"/>
           </li>
           <li>
@@ -174,6 +176,19 @@
             <label><input type="radio" name="paymentType" value="PC">Яндекс.Деньгами</label><br>
             <label><input type="radio" name="paymentType" value="AC">Банковской картой</label><br>
             <label><input type="radio" name="paymentType" value="MC">C баланса мобильного. </label>
+
+            <input type="hidden" name="receiver" value="41001303442475">
+            <input type="hidden" name="formcomment" value="Заказ поминовений">
+            <input type="hidden" name="short-dest" value="Заказ поминовений">
+            <input type="hidden" name="quickpay-form" value="shop">
+            <input type="text" name="targets" id="targets" value="Заказ 1" placeholder="description"><br>
+            <input type="hidden" name="comment" value="Заказ поминовений">
+            <input type="hidden" name="need-fio" value="false">
+            <input type="hidden" name="need-email" value="false">
+            <input type="hidden" name="need-phone" value="false">
+            <input type="hidden" name="need-address" value="false">
+
+
           </li>
           <li>
             <button id="buttonSpare" ref="submitButton" @click="submit">Пожертвовать</button>
