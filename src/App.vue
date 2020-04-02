@@ -14,8 +14,8 @@
         showForm: false,
         model: [],
         email: "",
-        //formUrl: `http://area.info/api/get_form`,
-        formUrl: `http://church-admin.loc/api/get_form`,
+        formUrl: `http://ar5ea.info/api/get_form`,
+        // formUrl: `http://church-admin.loc/api/get_form`,
         orderCreateUrl: "http://church-admin.loc/api/payment/yandex/create",
         orderID: null
       };
@@ -29,6 +29,9 @@
           return this.model.filter(item => item.name).length * this.selected.price;
         }
         return this.selected.price;
+      },
+      activateButton() {
+        return this.model.filter(item => item.name).length
       },
       getSeparatedName() {
         const [fist, second] = this.data.fields.names.title.split(":");
@@ -104,7 +107,7 @@
           <li>
             <span class="spanRite">{{data.fields.service.title}}</span>
             <div class="popup">
-              <button class="popupButton">?</button>
+              <button @click.prevent class="popupButton">?</button>
               <div class="popupContent">{{ data.fields.service.hint }}</div>
             </div>
           </li>
@@ -125,7 +128,7 @@
             <span class="spanRite">{{ getSeparatedName.fist }}:</span>
             <span id="spanObjection">{{ getSeparatedName.second }}</span>
             <div class="popup">
-              <button class="popupButton">?</button>
+              <button @click.prevent class="popupButton">?</button>
               <div class="popupContent">{{ data.fields.names.hint }}</div>
             </div>
           </li>
@@ -184,7 +187,7 @@
             <div>
               <span class="spanRite">{{data.fields.donate.title}}:</span>
               <div class="popup">
-                <button class="popupButton">?</button>
+                <button @click.prevent class="popupButton">?</button>
                 <div class="popupContent">{{ data.fields.amount.hint }}</div>
               </div>
             </div>
@@ -194,17 +197,17 @@
             <div>
               <span class="spanRite">{{data.fields.email.title}}:</span>
               <div class="popup">
-                <button class="popupButton">?</button>
+                <button @click.prevent class="popupButton">?</button>
                 <div class="popupContent">{{ data.fields.email.hint }}</div>
               </div>
             </div>
-            <input type="text" name="label" ref="order_id" v-model="orderID" v-show="true">
-            <input type="email" v-model="email" placeholder="для уведомлений" name="email" id="inputEmail"/>
+            <input type="email" required name="email" ref="order_id" v-model="orderID" v-show="true">
+            <input type="email" required v-model="email" placeholder="для уведомлений" name="email" id="inputEmail"/>
           </li>
           <li>
             <span class="spanRite">{{data.fields.amount.title}}:</span>
             <div class="popup">
-              <button class="popupButton">?</button>
+              <button @click.prevent class="popupButton">?</button>
               <div class="popupContent">{{ data.fields.amount.hint }}</div>
             </div>
           </li>
@@ -227,7 +230,11 @@
 
           </li>
           <li>
-            <button id="buttonSpare" ref="submitButton" @click="submit">Пожертвовать</button>
+
+            <button class="buttonSpare" v-if="activateButton" ref="submitButton" type="submit" @click.native="submit">
+              Пожертвовать
+            </button>
+            <button class="buttonSpareDisabled" v-else ref="submitButton" disabled>Пожертвовать</button>
           </li>
         </ul>
       </form>
@@ -247,7 +254,7 @@
     border-top: 3px solid #30365f;
     border-radius: 100%;
 
-    position: fixed;
+    position: absolute;
     top: 50%;
     transform: translate(-50%);
     left: 50%;
@@ -484,12 +491,25 @@
       }
     }
 
-    #buttonSpare {
+    .buttonSpare {
       border: 1px solid #3e8f3e;
       border-radius: 5px;
       padding: 10px 16px;
       background: linear-gradient(to bottom, #5cb85c 0, #419641 100%);
       color: #fff;
+      font-family: Georgia, serif, Arial;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      margin: 15px 0;
+    }
+
+    .buttonSpareDisabled {
+      border: 1px solid #618f63;
+      border-radius: 5px;
+      padding: 10px 16px;
+      background: linear-gradient(to bottom, #76b870 0, #7c9678 100%);
+      color: #cacaca;
       font-family: Georgia, serif, Arial;
       font-size: 16px;
       font-weight: 500;
