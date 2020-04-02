@@ -200,7 +200,7 @@
                 <div class="popupContent">{{ data.fields.email.hint }}</div>
               </div>
             </div>
-            <input type="hidden" name="order_id" ref="order_id" v-model="orderID" v-show="true">
+            <input type="text" name="order_id" ref="order_id" v-model="orderID" v-show="true">
             <input type="email" required v-model="email" placeholder="для уведомлений" name="email" id="inputEmail"/>
           </li>
           <li>
@@ -230,10 +230,9 @@
           </li>
           <li>
 
-            <button class="buttonSpare" v-if="activateButton" ref="submitButton" type="submit" @click.native="submit">
+            <button class="buttonSpare" :class="{buttonSpareDisabled: !activateButton}" ref="submitButton" type="submit" @click="submit">
               Пожертвовать
             </button>
-            <button class="buttonSpareDisabled" v-else ref="submitButton" disabled>Пожертвовать</button>
           </li>
         </ul>
       </form>
@@ -243,6 +242,8 @@
 </template>
 
 <style lang="scss">
+
+
   .spinner {
     z-index: 10000;
     opacity: 1;
