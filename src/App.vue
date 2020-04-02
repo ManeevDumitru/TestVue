@@ -256,8 +256,7 @@
 
     position: absolute;
     top: 50%;
-    transform: translate(-50%);
-    left: 50%;
+    left: 40%;
 
     animation: spin 1s infinite linear;
   }
