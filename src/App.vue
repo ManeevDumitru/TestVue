@@ -303,6 +303,8 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     color: #2c3e50;
+    max-width: 400px;
+    height: 800px;
   }
 
   section {
@@ -310,7 +312,6 @@
     left: 0;
     top: 0;
     background: #e2e2db;
-    max-width: 400px;
     margin: 0;
 
     h1 {
