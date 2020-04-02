@@ -63,6 +63,14 @@
       submit(e) {
         e.preventDefault();
 
+        if (!this.activateButton) {
+          return;
+        }
+
+        if (!this.$refs.payForm.reportValidity()) {
+          return;
+        }
+
         fetch(this.orderCreateUrl, {
           method: 'POST',
           mode: 'cors',
@@ -229,8 +237,8 @@
 
           </li>
           <li>
-
-            <button class="buttonSpare" :class="{buttonSpareDisabled: !activateButton}" ref="submitButton" type="submit" @click="submit">
+            <button class="buttonSpare" :class="{buttonSpareDisabled: !activateButton}" ref="submitButton"
+                    @click="submit">
               Пожертвовать
             </button>
           </li>
