@@ -14,9 +14,8 @@
         showForm: false,
         model: [],
         email: "",
-        formUrl: `http://area.info/api/get_form`,
-        // formUrl: `http://church-admin.loc/api/get_form`,
-        orderCreateUrl: "http://church-admin.loc/api/payment/yandex/create",
+        formUrl: process.env.VUE_APP_FORM_URL,
+        orderCreateUrl: process.env.VUE_APP_ORDER_URL,
         orderID: null
       };
     },
