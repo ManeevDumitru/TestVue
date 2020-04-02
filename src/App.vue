@@ -78,7 +78,7 @@
             offer_id: this.selected.id,
             amount: this.$refs.amount.value,
             email: this.email,
-            names_list: this.model
+            names_list: this.model.filter(item => item.name)
           })
         })
           .then((response) => {
