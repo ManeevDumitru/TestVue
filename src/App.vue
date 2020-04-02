@@ -201,7 +201,7 @@
                 <div class="popupContent">{{ data.fields.email.hint }}</div>
               </div>
             </div>
-            <input type="text" name="order_id" ref="order_id" v-model="orderID" v-show="true">
+            <input type="hidden" name="order_id" ref="order_id" v-model="orderID" v-show="true">
             <input type="email" required v-model="email" placeholder="для уведомлений" name="email" id="inputEmail"/>
           </li>
           <li>
@@ -221,7 +221,7 @@
             <input type="hidden" name="formcomment" value="Заказ поминовений">
             <input type="hidden" name="short-dest" value="Заказ поминовений">
             <input type="hidden" name="quickpay-form" value="shop">
-            <input type="text" name="targets" id="targets" :value="'Заказ ' + orderID" placeholder="description"><br>
+            <input type="hidden" name="targets" id="targets" :value="'Заказ ' + orderID" placeholder="description"><br>
             <input type="hidden" name="comment" value="Заказ поминовений">
             <input type="hidden" name="need-fio" value="false">
             <input type="hidden" name="need-email" value="false">
