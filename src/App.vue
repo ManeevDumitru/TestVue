@@ -201,7 +201,7 @@
                 <div class="popupContent">{{ data.fields.email.hint }}</div>
               </div>
             </div>
-            <input type="email" required name="email" ref="order_id" v-model="orderID" v-show="true">
+            <input type="text" name="order_id" ref="order_id" v-model="orderID" v-show="true">
             <input type="email" required v-model="email" placeholder="для уведомлений" name="email" id="inputEmail"/>
           </li>
           <li>
